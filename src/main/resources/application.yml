@@ -1,0 +1,20 @@
+spring:
+  ###### Database Properties  ###########################################
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/spring-reddit-clone
+    username: postgres
+    password: postgres
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  ############# Mail Properties ###########################################
+  mail:
+    host: smtp.mailtrap.io
+    port: 2525
+    username: 22c2ab6333ac00
+    password: a4a2aa8307b420
+    protocol: smtp
+
