@@ -1,6 +1,7 @@
 package com.example.springredditclone.service;
 
 import com.example.springredditclone.dto.RegisterRequest;
+import com.example.springredditclone.model.NotificationEmail;
 import com.example.springredditclone.model.User;
 import com.example.springredditclone.model.VerificationToken;
 import com.example.springredditclone.repository.UserRepository;
@@ -25,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailContentBuilder mailContentBuilder;
+    private final MailService mailService;
 
     @Transactional
     public void signup(RegisterRequest request) {
@@ -36,12 +38,13 @@ public class AuthService {
         user.setEnabled(false);
 
         userRepository.save(user);
-        String token = generateVerifyToken(user);
+        String token = generateVerificationToken(user);
         String message = mailContentBuilder.build("Thank you for signing up to Spring Reddit, please click on the below url to activate your account : "
                 + ACTIVATION_EMAIL + "/" + token);
+        mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
     }
 
-    private String generateVerifyToken(User user) {
+    private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
