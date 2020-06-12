@@ -3,6 +3,8 @@ package com.example.springredditclone.controller;
 import com.example.springredditclone.dto.SubredditDto;
 import com.example.springredditclone.service.SubredditService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,8 +25,10 @@ public class SubredditController {
      * @return список всех сабреддитов
      */
     @GetMapping
-    public List<SubredditDto> getAllSubreddits() {
-        return subredditService.getAll();
+    public ResponseEntity<List<SubredditDto>> getAllSubreddits() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(subredditService.getAll());
     }
 
     /**
@@ -33,8 +37,10 @@ public class SubredditController {
      * @return сабреддит
      */
     @GetMapping("/{id}")
-    public SubredditDto getSubreddit(@PathVariable Long id) {
-        return subredditService.getSubreddit(id);
+    public ResponseEntity<SubredditDto> getSubreddit(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(subredditService.getSubreddit(id));
     }
 
     /**
@@ -43,7 +49,8 @@ public class SubredditController {
      * @return сабреддит
      */
     @PostMapping
-    public SubredditDto create(@RequestBody @Valid SubredditDto subredditDto) {
-        return subredditService.save(subredditDto);
+    public ResponseEntity<SubredditDto> create(@RequestBody @Valid SubredditDto subredditDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(subredditService.save(subredditDto));
     }
 }
