@@ -1,6 +1,7 @@
 package com.example.springredditclone.security;
 
 import com.example.springredditclone.exception.SpringRedditException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -55,7 +56,42 @@ public class JwtProvider {
         try {
             return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
         } catch (UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException e) {
+            throw new SpringRedditException("Exception occured while retrieving private key from keystore");
+        }
+    }
+
+    /**
+     * Валидация токена
+     * @param jwt токен
+     * @return {@code true} если токен валидный
+     */
+    public boolean validateToken(String jwt) {
+        Jwts.parser().setSigningKey(getPublicKey()).parseClaimsJws(jwt);
+        return true;
+    }
+
+    /**
+     * Получить публичный ключ для подписи токена
+     * @return публичный ключ для подписи токена
+     */
+    private PublicKey getPublicKey() {
+        try {
+            return keyStore.getCertificate("springblog").getPublicKey();
+        } catch (KeyStoreException e) {
             throw new SpringRedditException("Exception occured while retrieving public key from keystore");
         }
+    }
+
+    /**
+     * Получить имя пользователя из токена
+     * @param jwt токен
+     * @return имя пользователя
+     */
+    public String getUsernameFromJWT(String jwt) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getPublicKey())
+                .parseClaimsJws(jwt)
+                .getBody();
+        return claims.getSubject();
     }
 }
