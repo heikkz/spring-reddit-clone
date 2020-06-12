@@ -2,6 +2,7 @@ package com.example.springredditclone.service;
 
 import com.example.springredditclone.dto.SubredditDto;
 import com.example.springredditclone.exception.SpringRedditException;
+import com.example.springredditclone.mapper.SubredditMapper;
 import com.example.springredditclone.model.Subreddit;
 import com.example.springredditclone.repository.SubredditRepository;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class SubredditService {
 
     private final SubredditRepository subredditRepository;
-    private final AuthService authService;
+    private final SubredditMapper subredditMapper;
 
     /**
      * Получить список всех сабреддитов
@@ -30,7 +31,7 @@ public class SubredditService {
     public List<SubredditDto> getAll() {
         return subredditRepository.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(subredditMapper::mapSubredditToDto)
                 .collect(Collectors.toList());
     }
 
@@ -41,7 +42,7 @@ public class SubredditService {
      */
     @Transactional
     public SubredditDto save(SubredditDto dto) {
-        Subreddit subreddit = subredditRepository.save(mapToSubreddit(dto));
+        Subreddit subreddit = subredditRepository.save(subredditMapper.mapDtoToSubreddit(dto));
         dto.setId(subreddit.getId());
         return dto;
     }
@@ -55,34 +56,6 @@ public class SubredditService {
     public SubredditDto getSubreddit(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new SpringRedditException("Subreddit not found with id -" + id));
-        return mapToDto(subreddit);
-    }
-
-    /**
-     * Мэппер {@link Subreddit} -> {@link SubredditDto}
-     * @param subreddit сабреддит
-     * @return dto сабреддит
-     */
-    private SubredditDto mapToDto(Subreddit subreddit) {
-        return SubredditDto.builder()
-                .name(subreddit.getName())
-                .id(subreddit.getId())
-                .description(subreddit.getDescription())
-                .postCount(subreddit.getPosts().size())
-                .build();
-    }
-
-    /**
-     * Мэппер {@link SubredditDto} -> {@link Subreddit}
-     * @param dto dto сабреддит
-     * @return сабреддит
-     */
-    private Subreddit mapToSubreddit(SubredditDto dto) {
-        return Subreddit.builder()
-                .name("/r/" + dto.getName())
-                .description(dto.getDescription())
-                .user(authService.getCurrentUser())
-                .createdDate(Instant.now())
-                .build();
+        return subredditMapper.mapSubredditToDto(subreddit);
     }
 }
