@@ -14,12 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Реализация {@link UserDetailsService} c использованием БД, через {@link UserRepository}
+ */
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Получить сведения о пользователе для Spring Security
+     * @param username имя пользователя
+     * @return {@link UserDetails} сведения о пользователе
+     * @throws UsernameNotFoundException если пользователь не был найден
+     */
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -29,6 +38,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 user.isEnabled(), true, true, true, getAuthorities("USER"));
     }
 
+    /**
+     * Создать список с переданной ролью в системе
+     * @param role роль пользователя
+     * @return список с переданной ролью в системе
+     */
     private Collection<? extends GrantedAuthority> getAuthorities(String role) {
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }

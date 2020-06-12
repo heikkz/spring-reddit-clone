@@ -27,6 +27,9 @@ import java.util.UUID;
 
 import static com.example.springredditclone.util.Constants.ACTIVATION_EMAIL;
 
+/**
+ * Сервис регистрации/аутентификации пользователя
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -40,6 +43,10 @@ public class AuthService {
     private final MailService mailService;
     private final VerificationTokenRepository verificationTokenRepository;
 
+    /**
+     * Регистрация пользователя
+     * @param request пользовательские данные
+     */
     @Transactional
     public void signup(RegisterRequest request) {
         User user = new User();
@@ -56,6 +63,11 @@ public class AuthService {
         mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
     }
 
+    /**
+     * Сгененировать токен подтверждения, для активации пользователя
+     * @param user пользователь
+     * @return токен подтверждения
+     */
     private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
@@ -65,10 +77,20 @@ public class AuthService {
         return token;
     }
 
+    /**
+     * Закодировать пароль
+     * @param password пароль
+     * @return закодированный пароль
+     */
     private String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
 
+    /**
+     * Логин пользователя
+     * @param loginRequest запрос
+     * @return ответ на аутентификацию
+     */
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -77,12 +99,20 @@ public class AuthService {
         return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
     }
 
+    /**
+     * Верифицировать пользователя, после регистрации, по токену
+     * @param token токен верификации
+     */
     public void verifyAccount(String token) {
         Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
         optionalVerificationToken.orElseThrow(() -> new SpringRedditException("Invalid Token"));
         fetchUserAndEnable(optionalVerificationToken.get());
     }
 
+    /**
+     * Обновить и активировать пользователя
+     * @param verificationToken токен верификации
+     */
     @Transactional
     void fetchUserAndEnable(VerificationToken verificationToken) {
         @NotBlank(message = "Username is required") String username = verificationToken.getUser().getUsername();

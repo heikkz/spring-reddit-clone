@@ -7,8 +7,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Репозиторий работы с постами {@link Post}
+ */
 public interface PostRepository extends JpaRepository<Post, Long> {
+
+    /**
+     * Получить список всех постов для сабреддита
+     * @param subreddit сабреддит
+     * @return список постов
+     */
     List<Post> findAllBySubreddit(Subreddit subreddit);
 
+    /**
+     * Получить список постов пользователя
+     * @param user пользователь
+     * @return список постов
+     */
     List<Post> findByUser(User user);
 }

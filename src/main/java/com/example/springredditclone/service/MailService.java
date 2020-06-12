@@ -11,6 +11,9 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+/**
+ * Класс для отправки email сообщений
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -19,6 +22,10 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final MailContentBuilder mailContentBuilder;
 
+    /**
+     * Отправить сообщение
+     * @param email сообщение, отправляемое по email
+     */
     @Async
     void sendMail(NotificationEmail email) {
         MimeMessagePreparator mimeMessagePreparator = mimeMessage -> {

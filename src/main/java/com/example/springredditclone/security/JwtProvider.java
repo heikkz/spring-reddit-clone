@@ -12,11 +12,17 @@ import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 
+/**
+ * Класс для работы с JWT-токеном
+ */
 @Service
 public class JwtProvider {
 
     private KeyStore keyStore;
 
+    /**
+     * Инициализация сервиса
+     */
     @PostConstruct
     public void init() {
         try {
@@ -28,6 +34,11 @@ public class JwtProvider {
         }
     }
 
+    /**
+     * Сгененировать jwt-токен
+     * @param authenticate сущность аутентификации внутри спринга
+     * @return jwt-токен
+     */
     public String generateToken(Authentication authenticate) {
         User principal = (User) authenticate.getPrincipal();
         return Jwts.builder()
@@ -36,6 +47,10 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * Получить приватный ключ для подписи токена
+     * @return приватный ключ для подписи токена
+     */
     private PrivateKey getPrivateKey() {
         try {
             return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());

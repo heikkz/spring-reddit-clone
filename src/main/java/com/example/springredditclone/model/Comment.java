@@ -9,6 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 
+/**
+ * Сущность комментария
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,15 +19,30 @@ import java.time.Instant;
 @Builder
 public class Comment {
 
+    /**
+     * Идентификатор комментария
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    /**
+     * Текст
+     */
     @NotEmpty
     private String text;
+    /**
+     * Пост
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "postId")
     private Post post;
+    /**
+     * Дата создания
+     */
     private Instant createdDate;
+    /**
+     * Автор комментария
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;

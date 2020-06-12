@@ -14,7 +14,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 
 /**
- * User, who can create Subreddits and Posts, other users can add Comments on the Posts, and can Vote
+ * Сущность пользователя
  */
 @Data
 @AllArgsConstructor
@@ -22,18 +22,34 @@ import java.time.Instant;
 @Entity(name = "users")
 public class User {
 
+    /**
+     * Уникальный id пользователя
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long userId;
+    /**
+     * Имя
+     */
     @NotBlank(message = "Username is required")
     private String username;
+    /**
+     * Пароль
+     */
     @NotBlank(message = "Password is required")
     private String password;
+    /**
+     * Почтовый адрес
+     */
     @Email
     @NotEmpty(message = "Email is required")
     private String email;
-
+    /**
+     * Дата регистрации
+     */
     private Instant created;
-
+    /**
+     * Признак что пользователь активен
+     */
     private boolean enabled;
 }
