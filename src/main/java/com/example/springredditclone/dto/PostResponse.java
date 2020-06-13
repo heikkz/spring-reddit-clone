@@ -36,5 +36,17 @@ public class PostResponse {
      * Имя сабреддита
      */
     private String subredditName;
+    /**
+     * Количество голосов
+     */
+    private Integer voteCount;
+    /**
+     * Количество комментариев
+     */
+    private Integer commentCount;
+    /**
+     * Дата в строковом представлении с какого то момента
+     */
+    private String duration;
 
 }
