@@ -39,7 +39,7 @@ public class MailService {
             mailSender.send(mimeMessagePreparator);
             log.info("Activation email sent!!");
         } catch (MailException e) {
-            throw new SpringRedditException("Exception occurred when sending mail to " + email.getRecipient());
+            throw new SpringRedditException("Exception occurred when sending mail to " + email.getRecipient(), e);
         }
     }
 }
