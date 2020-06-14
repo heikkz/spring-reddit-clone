@@ -18,3 +18,8 @@ spring:
     password: a4a2aa8307b420
     protocol: smtp
 
+############ JWT Properties #####################
+jwt:
+  expiration:
+    time: 900000
+
